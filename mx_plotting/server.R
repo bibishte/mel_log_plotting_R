@@ -73,10 +73,38 @@ server <- function(input, output, session) {
         Sys.sleep(0.1)
         incProgress(1/4)
         
+        observeEvent(input$checkbox,{
+          shinyjs::enable("checkbox")
+        if("D_XPOS_ID" %in% colnames(my_data))
+        {
+          if(input$select=="")
+          {
+            return(NULL)
+          }
+          if(input$checkbox)
+          {
+            xCoord <<- c(as.numeric(paste(as.character(my_data[,"XPos"])), collapse=''))
+            yCoord <<- c(as.numeric(paste(as.character(my_data[,"YPos"])), collapse=''))
+            die <<- c(as.numeric(paste(as.character(my_data[,"DieNr"])), collapse=''))
+          }
+          else
+          {
+            xCoord <<- c(my_data[,"D_XPOS_ID"] )
+            yCoord <<- c(my_data[,"D_YPOS_ID"] )
+            die <<- c(my_data[,"site.number"] )
+          }
+        }
+        else
+        {
+          shinyjs::disable("checkbox")
+          xCoord <<- c(as.numeric(paste(as.character(my_data[,"XPos"])), collapse=''))
+          yCoord <<- c(as.numeric(paste(as.character(my_data[,"YPos"])), collapse=''))
+          die <<- c(as.numeric(paste(as.character(my_data[,"DieNr"])), collapse=''))
+        }
         
-        xCoord <<- c(as.numeric(paste(as.character(my_data[,"XPos"])), collapse=''))
-        yCoord <<- c(as.numeric(paste(as.character(my_data[,"YPos"])), collapse=''))
-        die <<- c(as.numeric(paste(as.character(my_data[,"DieNr"])), collapse=''))
+        })
+        
+        
       }
       
       else
@@ -123,14 +151,36 @@ server <- function(input, output, session) {
         incProgress(1/4)
         
       
-        xCoord <<- c(my_data[,"x.coord"])
-        yCoord <<- c(my_data[,"y.coord"])
-        die <<- c(my_data[,"site.number"])
+        observeEvent(input$checkbox,{
+          shinyjs::enable("checkbox")
+          if("D_XPOS_ID" %in% colnames(my_data))
+          {
+            if(input$checkbox)
+            {
+              xCoord <<- c(my_data[,"D_XPOS_ID"] )
+              yCoord <<- c(my_data[,"D_YPOS_ID"] )
+              die <<- c(my_data[,"site.number"] )
+            }
+            else
+            {
+              xCoord <<- c(my_data[,"x.coord"])
+              yCoord <<- c(my_data[,"y.coord"])
+              die <<- c(my_data[,"site.number"])
+            }
+          }
+          else
+          {
+            xCoord <<- c(my_data[,"x.coord"])
+            yCoord <<- c(my_data[,"y.coord"])
+            die <<- c(my_data[,"site.number"])
+          }
+          
+        })
       }
       
       output$dataSelector <- renderUI({
         addToInput<<-c("", colnames(my_data))
-        selectInput("select", label = h3("Select parameter"), 
+        selectInput("select", label = h3("Select parameter"),selectize = FALSE, 
                     choices=addToInput, 
                     selected = 1)
         })
@@ -145,8 +195,7 @@ server <- function(input, output, session) {
   
   
   
-  
-  
+  observeEvent(input$checkbox,{
   observeEvent(input$bins,{
       observeEvent(input$select,{
         if(input$select=="")
@@ -263,6 +312,8 @@ server <- function(input, output, session) {
         
         })
     })
+    
+  })
     
   })
 
