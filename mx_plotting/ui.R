@@ -11,6 +11,7 @@ library(shiny)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  shinyjs::useShinyjs(),
   titlePanel("Managing parametrs and files"),
   sidebarLayout
   (
@@ -22,7 +23,8 @@ ui <- fluidPage(
                   min = 1,
                   max = 1000,
                   value = 200),
-        uiOutput("dataSelector")
+        uiOutput("dataSelector"),
+      checkboxInput("checkbox", label = "Coordinates from D_X/YPOS_ID", value = FALSE)
       
     ),
     mainPanel(
@@ -47,5 +49,4 @@ ui <- fluidPage(
     
   )
 )
-
 
